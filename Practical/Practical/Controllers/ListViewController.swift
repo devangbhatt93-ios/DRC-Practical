@@ -25,7 +25,7 @@ class ListViewController: UIViewController {
         super.viewDidLoad()
 
         DispatchQueue.main.async {
-            self.navigationView.setDropShadow(radius: 5, color: .gray)
+            self.navigationView.setDropShadow(radius: 5, color: .gray, offset: CGSize(width: 0 , height: 3))
         }
         
         articleListAPICall()
@@ -88,6 +88,7 @@ extension ListViewController {
     }
 }
 
+// MARK: -  UICollectionViewDataSource, UICollectionViewDelegate Methods
 extension ListViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return arrFilters.count
@@ -112,6 +113,7 @@ extension ListViewController: UICollectionViewDataSource, UICollectionViewDelega
     }
 }
 
+// MARK: - UICollectionViewDelegateFlowLayout Methods
 extension ListViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let name = arrFilters[indexPath.item].name ?? ""
@@ -121,6 +123,7 @@ extension ListViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+// MARK: -  UITableViewDataSource, UITableViewDelegate Methods
 extension ListViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return arrArticles.count
@@ -139,16 +142,12 @@ extension ListViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-    }
-    
-    func applyShadowCardView(_ view: UIView, andCorner radi: Int)
-    {
-        view.layer.cornerRadius = CGFloat(radi)
-        view.layer.shadowColor = UIColor.gray.cgColor
-        view.layer.shadowOpacity = 0.7
-        view.layer.shadowRadius = 3.0
-        view.layer.shadowOffset = CGSize(width: 1, height: 1)
+     
+        guard let newsDetailsViewController = self.storyboard?.instantiateViewController(withIdentifier: "NewDetailsViewController") as? NewDetailsViewController else {
+            return
+        }
+        newsDetailsViewController.article = arrArticles[indexPath.row]
+        self.navigationController?.pushViewController(newsDetailsViewController, animated: true)
     }
 }
 
@@ -161,5 +160,9 @@ extension UIView {
         layer.shadowOpacity = 0.6
         layer.masksToBounds = false
         layer.cornerRadius = radius
+        layer.shadowPath = UIBezierPath(rect: CGRect(x: 0,
+                                                          y: bounds.maxY - layer.shadowRadius,
+                                                          width: bounds.width,
+                                                          height: layer.shadowRadius)).cgPath
     }
 }

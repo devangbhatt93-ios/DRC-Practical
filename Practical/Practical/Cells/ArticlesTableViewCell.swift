@@ -31,7 +31,7 @@ class ArticlesTableViewCell: UITableViewCell {
         
         nameLabel.text = article.author ?? ""
         titleLabel.text = article.description ?? ""
-        datelabel.text = article.publishedAt ?? ""
+        datelabel.text = article.publishedDate
         
     }
 }
